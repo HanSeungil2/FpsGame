@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerFire : MonoBehaviour
 {
@@ -16,10 +17,31 @@ public class PlayerFire : MonoBehaviour
 
     public int weaponPower = 5;
 
+    Animator anim;
+
+    enum WeaponMode
+    {
+        Normal,
+        Sniper
+    }
+    WeaponMode wMode;
+
+    bool ZommMode = false;
+
+    public Text wModeText;
+
+    public GameObject[] eff_flash;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         ps = bulletEffect.GetComponent<ParticleSystem>();
+
+        anim = GetComponentInChildren<Animator>();
+
+        wMode = WeaponMode.Normal;
     }
 
     // Update is called once per frame
@@ -33,8 +55,16 @@ public class PlayerFire : MonoBehaviour
         //마우스 왼쪽
         if (Input.GetMouseButtonDown(0))
         {
+            if(anim.GetFloat("MoveMotion") == 0)
+            {
+                anim.SetTrigger("Attack");
+            }
+
             //레이를 생성한후 발사될 위치와 진행방향을 설정
             Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+
+            StartCoroutine(ShootEffectOn(0.05f));
+
 
             //레이가 부딪힌 대상의 정보
             RaycastHit hitInfo = new RaycastHit();
@@ -65,13 +95,60 @@ public class PlayerFire : MonoBehaviour
         //마우스 오른쪽
         if (Input.GetMouseButtonDown(1))
         {
-            GameObject bomb = Instantiate(bombFactory);
-            bomb.transform.position = firePosition.transform.position;
+            switch (wMode)
+            {
+                case WeaponMode.Normal:
+                    GameObject bomb = Instantiate(bombFactory);
+                    bomb.transform.position = firePosition.transform.position;
 
-            Rigidbody rb = bomb.GetComponent<Rigidbody>();
+                    Rigidbody rb = bomb.GetComponent<Rigidbody>();
 
-            //카메라 정면방향으로 수류탄에 물리적 힘을 가한다.
-            rb.AddForce(Camera.main.transform.forward * throwPower, ForceMode.Impulse);
+                    //카메라 정면방향으로 수류탄에 물리적 힘을 가한다.
+                    rb.AddForce(Camera.main.transform.forward * throwPower, ForceMode.Impulse);
+                    break;
+
+                case WeaponMode.Sniper:
+                    if(!ZommMode)
+                    {
+                        Camera.main.fieldOfView = 15f;
+                        ZommMode = true;
+                    } else
+                    {
+                        Camera.main.fieldOfView = 60f;
+                        ZommMode = false;
+                    }
+
+                    break;
+            }
+
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            wMode = WeaponMode.Normal;
+
+            Camera.main.fieldOfView = 60f;
+
+            wModeText.text = "Normal Mode";
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            wMode = WeaponMode.Sniper;
+
+            wModeText.text = "Sniper Mode";
+        }
+    }
+
+    IEnumerator ShootEffectOn(float duration)
+    {
+        int num = Random.Range(0, eff_flash.Length - 1);
+
+        eff_flash[num].SetActive(true);
+
+        yield return new WaitForSeconds(duration);
+
+        eff_flash[num].SetActive(false);
+        eff_flash[num].SetActive(false);
+
     }
 }

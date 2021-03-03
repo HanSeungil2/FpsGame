@@ -27,12 +27,15 @@ public class PlayerMove : MonoBehaviour
 
     public GameObject hitEffect;
 
+    Animator anim;
 
 
     // Start is called before the first frame update
     void Start()
     {
         cc = GetComponent<CharacterController>();
+
+        anim = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -50,6 +53,8 @@ public class PlayerMove : MonoBehaviour
         //방향
         Vector3 dir = new Vector3(h, 0, v);
         dir = dir.normalized;
+
+        anim.SetFloat("MoveMotion", dir.magnitude);
 
         //카메라 기준으로 방향 변환
         dir = Camera.main.transform.TransformDirection(dir);
