@@ -32,6 +32,7 @@ public class PlayerFire : MonoBehaviour
 
     public GameObject[] eff_flash;
 
+    AudioSource aSource;
 
 
     // Start is called before the first frame update
@@ -42,6 +43,8 @@ public class PlayerFire : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
 
         wMode = WeaponMode.Normal;
+
+        aSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -55,7 +58,9 @@ public class PlayerFire : MonoBehaviour
         //마우스 왼쪽
         if (Input.GetMouseButtonDown(0))
         {
-            if(anim.GetFloat("MoveMotion") == 0)
+            aSource.Play();
+
+            if (anim.GetFloat("MoveMotion") == 0)
             {
                 anim.SetTrigger("Attack");
             }
