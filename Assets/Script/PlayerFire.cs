@@ -26,13 +26,23 @@ public class PlayerFire : MonoBehaviour
     }
     WeaponMode wMode;
 
-    bool ZommMode = false;
+    bool ZoomMode = false;
 
     public Text wModeText;
 
     public GameObject[] eff_flash;
 
     AudioSource aSource;
+
+    public GameObject weapon01;
+    public GameObject weapon02;
+    public GameObject weapon01_R;
+    public GameObject weapon02_R;
+
+    public GameObject crossHair01;
+    public GameObject crossHair02;
+    public GameObject crossHair02_zoom;
+
 
 
     // Start is called before the first frame update
@@ -113,14 +123,21 @@ public class PlayerFire : MonoBehaviour
                     break;
 
                 case WeaponMode.Sniper:
-                    if(!ZommMode)
+                    if(!ZoomMode)
                     {
                         Camera.main.fieldOfView = 15f;
-                        ZommMode = true;
+                        ZoomMode = true;
+
+                        crossHair02_zoom.SetActive(true);
+                        crossHair02.SetActive(false);
+
                     } else
                     {
                         Camera.main.fieldOfView = 60f;
-                        ZommMode = false;
+                        ZoomMode = false;
+
+                        crossHair02_zoom.SetActive(false);
+                        crossHair02.SetActive(true);
                     }
 
                     break;
@@ -135,12 +152,29 @@ public class PlayerFire : MonoBehaviour
             Camera.main.fieldOfView = 60f;
 
             wModeText.text = "Normal Mode";
+
+            weapon01.SetActive(true);
+            weapon02.SetActive(false);
+            weapon01_R.SetActive(true);
+            weapon02_R.SetActive(false);
+            crossHair01.SetActive(true);
+            crossHair02.SetActive(false);
+            crossHair02_zoom.SetActive(false);
+
+
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             wMode = WeaponMode.Sniper;
 
             wModeText.text = "Sniper Mode";
+
+            weapon01.SetActive(false);
+            weapon02.SetActive(true);
+            weapon01_R.SetActive(false);
+            weapon02_R.SetActive(true);
+            crossHair01.SetActive(false);
+            crossHair02.SetActive(true);
         }
     }
 
