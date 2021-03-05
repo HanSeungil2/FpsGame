@@ -224,7 +224,7 @@ public class EnemyFSM : MonoBehaviour
     public void HitEnemy(int hitPower)
     {
         // 피격, 사망, 복귀 상태면 함수 종료
-        if (m_State == EnemyState.Damaged || m_State == EnemyState.Die || m_State == EnemyState.Return)
+        if (m_State == EnemyState.Damaged || m_State == EnemyState.Die )
         {
             return;
         }
